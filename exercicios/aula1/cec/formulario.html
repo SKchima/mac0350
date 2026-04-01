@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercício 1 - Jupiterweb</title>
+    <link rel="icon" type="image/png" href="logo_jupiter.png">
+    <style>
+        body {
+            max-width: 1024px;
+            width: 95%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            font-family: sans-serif;
+        }
+
+        header img {
+            display: block;
+            margin: 0 auto 20px auto;
+            max-width: 100%;
+            height: auto;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            width: 300px;
+            max-width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input {
+            padding: 12px;
+            font-size: 1rem;
+        }
+
+        input[type="submit"] {
+            background-color: #004a8e;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            form {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <img src="jupiter_d2.jpg">
+    </header>
+
+    <h1>Login</h1>
+    <form>
+        <label for="usp">N°USP</label>
+        <input type="text" id="usp" placeholder="N°USP">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" placeholder="Senha">
+        <input type="submit" value="Entrar">
+    </form>
+
+    <footer>
+        por incrível que pareça, esse site não é o <a href="https://uspdigital.usp.br/jupiterweb/webLogin.jsp"
+            target="_blank">original</a>
+    </footer>
+
+</body>
+
+</html>
