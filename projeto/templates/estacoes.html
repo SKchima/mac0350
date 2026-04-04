@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block conteudo %}
+<div>
+    <h2>Painel da Estação</h2>
+
+    <div>
+        <h3>Bem-vindo(a), <strong>{{ user.nome }}</strong>!</h3>
+        <p>Você está alocado(a) na <strong>Estação {{ user.estacao }}</strong>.</p>
+    </div>
+
+    <a href="/logout">Sair da Conta</a>
+</div>
+{% endblock %}

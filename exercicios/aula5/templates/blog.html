@@ -1,0 +1,7 @@
+<ul>
+    {% for p in posts %}
+    <li>Artigo: {{ p | title }}</li>
+    {% else %}
+    <li>Nenhum artigo publicado ainda.</li>
+    {% endfor %}
+</ul>
