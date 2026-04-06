@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from sqlmodel import Session, select
-from typing import Annotated
+from typing import Annotated, Optional
 from models import Usuario, Reserva, Estacao
 from database import engine, create_db_and_tables
 
@@ -141,6 +141,31 @@ def desocupar_estacao(estacao_id: int = Form(...), user: Usuario = Depends(get_a
 #################################################
 # Rotas de reservas
 
+@app.get("/estacoes_disponiveis", response_class=HTMLResponse)
+def get_estacoes_disponiveis(dia: Optional[str] = None, horario: Optional[str] = None, user: Usuario = Depends(get_active_user)):
+    if not dia or not horario or not dia.isdigit() or not horario.isdigit():
+        return HTMLResponse(content="<option value=''>Selecione dia e horário primeiro</option>")
+    
+    dia_int = int(dia)
+    horario_int = int(horario)
+    
+    with Session(engine) as session:
+        todas_estacoes = session.exec(select(Estacao)).all()
+        reservadas = session.exec(select(Reserva).where(Reserva.dia == dia_int, Reserva.horario == horario_int)).all()
+        ids_reservadas = [r.estacao_id for r in reservadas]
+        
+        disponiveis = [e for e in todas_estacoes if e.id not in ids_reservadas]
+        
+        if not disponiveis:
+            return HTMLResponse(content="<option value=''>Nenhuma estação livre</option>")
+            
+        opcoes = ""
+        for est in disponiveis:
+            opcoes += f"<option value='{est.id}'>{est.nome}</option>\n"
+            
+        return HTMLResponse(content=opcoes)
+
+
 @app.post("/reservas", response_class=HTMLResponse)
 def criar_reserva(request: Request, estacao_id: int = Form(...), dia: int = Form(...), horario: int = Form(...), user: Usuario = Depends(get_active_user)):
     with Session(engine) as session:
@@ -153,7 +178,7 @@ def criar_reserva(request: Request, estacao_id: int = Form(...), dia: int = Form
         session.add(nova_reserva)
         session.commit()
         session.refresh(nova_reserva)
-        return HTMLResponse(content=f"<p>Reserva criada com sucesso para a estação {estacao_id}!</p>")
+        return HTMLResponse(content=f"<p>Reserva criada com sucesso para a estação {estacao_id}!</p>", headers={"HX-Trigger": "atualizaReservas"})
 
 @app.get("/reservas")
 def get_reservas(request: Request, pagina: int = 1, user: Usuario = Depends(get_active_user)):
@@ -163,10 +188,14 @@ def get_reservas(request: Request, pagina: int = 1, user: Usuario = Depends(get_
         todas = session.exec(select(Reserva).where(Reserva.usuario_id == user.id).offset(minimo).limit(maximo + 1)).all()
         tem_proxima = len(todas) > maximo
         reservas = todas[:maximo]
+        
+        minhas_reservas_todas = session.exec(select(Reserva).where(Reserva.usuario_id == user.id)).all()
+        estacoes = session.exec(select(Estacao)).all()
+        
         return templates.TemplateResponse(
             request=request,
             name="reservas.html",
-            context={"reservas": reservas, "pagina": pagina, "tem_proxima": tem_proxima, "user": user}
+            context={"reservas": reservas, "pagina": pagina, "tem_proxima": tem_proxima, "user": user, "minhas_reservas_todas": minhas_reservas_todas, "estacoes": estacoes}
         )
 
 @app.put("/reservas", response_class=HTMLResponse)
@@ -188,7 +217,7 @@ def atualizar_reserva(id: int = Form(...), estacao_id: int = Form(...), dia: int
         session.add(reserva_encontrada)
         session.commit()
         session.refresh(reserva_encontrada)
-        return HTMLResponse(content=f"<p>Reserva {id} atualizada com sucesso!</p>")
+        return HTMLResponse(content=f"<p>Reserva {id} atualizada com sucesso!</p>", headers={"HX-Trigger": "atualizaReservas"})
 
 @app.delete("/reservas", response_class=HTMLResponse)
 def deletar_reserva(id: int, user: Usuario = Depends(get_active_user)):
@@ -200,4 +229,4 @@ def deletar_reserva(id: int, user: Usuario = Depends(get_active_user)):
             return HTMLResponse(content="<p>Erro: Você não pode deletar uma reserva de outro usuário!</p>")
         session.delete(reserva_encontrada)
         session.commit()
-        return HTMLResponse(content=f"<p>Reserva {id} cancelada com sucesso!</p>")
+        return HTMLResponse(content=f"<p>Reserva {id} cancelada com sucesso!</p>", headers={"HX-Trigger": "atualizaReservas"})

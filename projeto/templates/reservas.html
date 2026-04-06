@@ -4,9 +4,10 @@
 <p>Aqui você pode fazer as suas reservas para a semana que vem</p>
 <br>
 <h2>Criar reserva</h2>
-<form hx-post="/reservas" hx-target="#mensagem" hx-swap="beforeend" hx-on::after-request="this.reset()">
-    <input type="text" name="estacao_id" placeholder="ID da Estação" required>
-    <select name="dia" required>
+<form hx-post="/reservas" hx-target="#mensagem" hx-swap="innerHTML">
+    <select name="dia" required hx-get="/estacoes_disponiveis" hx-include="closest form"
+        hx-target="#estacao_id_dropdown" hx-trigger="change">
+        <option value="" selected disabled>Selecione o Dia</option>
         <option value="0">Segunda-feira</option>
         <option value="1">Terça-feira</option>
         <option value="2">Quarta-feira</option>
@@ -14,11 +15,31 @@
         <option value="4">Sexta-feira</option>
         <option value="5">Sábado</option>
     </select>
-    <input type="number" min="8" max="20" name="horario" placeholder="Horário" required>
+    <select name="horario" required hx-get="/estacoes_disponiveis" hx-include="closest form"
+        hx-target="#estacao_id_dropdown" hx-trigger="change">
+        <option value="" disabled selected>Selecione o Horário</option>
+        <option value="8">08:00</option>
+        <option value="9">09:00</option>
+        <option value="10">10:00</option>
+        <option value="11">11:00</option>
+        <option value="12">12:00</option>
+        <option value="13">13:00</option>
+        <option value="14">14:00</option>
+        <option value="15">15:00</option>
+        <option value="16">16:00</option>
+        <option value="17">17:00</option>
+        <option value="18">18:00</option>
+        <option value="19">19:00</option>
+        <option value="20">20:00</option>
+    </select>
+    <select name="estacao_id" id="estacao_id_dropdown" required>
+        <option value="">Selecione dia e horário primeiro</option>
+    </select>
     <button type="submit">Criar reserva</button>
 </form>
 
-<div id="lista" hx-get="/reservas" hx-trigger="submit from:form, delete from:form, put from:form" hx-target="#lista"
+
+<div id="lista" hx-get="/reservas" hx-trigger="atualizaReservas from:body" hx-target="#lista"
     hx-select="#lista" hx-swap="outerHTML">
     <h2>Minhas Reservas</h2>
     <ul>
@@ -50,10 +71,24 @@
 </div>
 
 <h2>Atualizar reserva</h2>
-<form hx-put="/reservas" hx-target="#mensagem" hx-swap="beforeend" hx-on::after-request="this.reset()">
-    <input type="number" name="id" placeholder="ID da reserva" required>
-    <input type="text" name="estacao_id" placeholder="ID da Estação" required>
+<form hx-put="/reservas" hx-target="#mensagem" hx-swap="innerHTML"
+    hx-on::after-request="if(event.detail.elt === this) { this.reset(); }">
+    <select name="id" id="select-atualizar" required hx-get="/reservas" hx-trigger="atualizaReservas from:body" hx-target="#select-atualizar" hx-select="#select-atualizar" hx-swap="outerHTML">
+        <option value="" disabled selected>Escolha sua reserva</option>
+        {% set nomes_dias = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'] %}
+        {% for minres in minhas_reservas_todas %}
+        <option value="{{ minres.id }}">ID {{ minres.id }} - Estação {{ minres.estacao_id }} ({{ nomes_dias[minres.dia] }} às {{
+            minres.horario }}:00)</option>
+        {% endfor %}
+    </select>
+    <select name="estacao_id" required>
+        <option value="" disabled selected>Nova Estação</option>
+        {% for est in estacoes %}
+        <option value="{{ est.id }}">{{ est.nome }}</option>
+        {% endfor %}
+    </select>
     <select name="dia" required>
+        <option value="" disabled selected>Selecione o Dia</option>
         <option value="0">Segunda-feira</option>
         <option value="1">Terça-feira</option>
         <option value="2">Quarta-feira</option>
@@ -61,13 +96,36 @@
         <option value="4">Sexta-feira</option>
         <option value="5">Sábado</option>
     </select>
-    <input type="number" min="8" max="20" name="horario" placeholder="Horário" required>
+    <select name="horario" required>
+        <option value="" disabled selected>Horário</option>
+        <option value="8">08:00</option>
+        <option value="9">09:00</option>
+        <option value="10">10:00</option>
+        <option value="11">11:00</option>
+        <option value="12">12:00</option>
+        <option value="13">13:00</option>
+        <option value="14">14:00</option>
+        <option value="15">15:00</option>
+        <option value="16">16:00</option>
+        <option value="17">17:00</option>
+        <option value="18">18:00</option>
+        <option value="19">19:00</option>
+        <option value="20">20:00</option>
+    </select>
     <button type="submit">Atualizar reserva</button>
 </form>
 
 <h2>Deletar reserva</h2>
-<form hx-delete="/reservas" hx-target="#mensagem" hx-swap="beforeend" hx-on::after-request="this.reset()">
-    <input type="number" name="id" placeholder="ID da reserva" required>
+<form hx-delete="/reservas" hx-target="#mensagem" hx-swap="innerHTML"
+    hx-on::after-request="if(event.detail.elt === this) { this.reset(); }">
+    <select name="id" id="select-deletar" required hx-get="/reservas" hx-trigger="atualizaReservas from:body" hx-target="#select-deletar" hx-select="#select-deletar" hx-swap="outerHTML">
+        <option value="" disabled selected>Escolha sua reserva</option>
+        {% set nomes_dias = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'] %}
+        {% for minres in minhas_reservas_todas %}
+        <option value="{{ minres.id }}">ID {{ minres.id }} - Estação {{ minres.estacao_id }} ({{ nomes_dias[minres.dia] }} às {{
+            minres.horario }}:00)</option>
+        {% endfor %}
+    </select>
     <button type="submit">Deletar reserva</button>
 </form>
 

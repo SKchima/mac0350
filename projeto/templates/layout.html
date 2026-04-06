@@ -19,19 +19,19 @@
             {% if user %}
             <div class="nav-links">
                 <a href="/estacoes">Casa do Código</a>
-                <span>|</span>
+                <span class="separador">|</span>
                 <a href="/reservas">Reservas</a>
             </div>
 
             <div class="nav-user">
                 <span>Logado como: {{ user.nome }}</span>
-                <span>|</span>
+                <span class="separador">|</span>
                 <a href="/logout">Logout</a>
             </div>
             {% else %}
             <div class="nav-user" style="margin-left: auto;">
                 <a href="/login">Já tenho uma conta</a>
-                <span>|</span>
+                <span class="separador">|</span>
                 <a href="/cadastro">Quero me cadastrar</a>
             </div>
             {% endif %}
