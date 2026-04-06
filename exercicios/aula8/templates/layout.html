@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HTMX</title>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.js"
+        integrity="sha384-ezjq8118wdwdRMj+nX4bevEi+cDLTbhLAeFF688VK8tPDGeLUe0WoY2MZtSla72F"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <h1>Meu Site</h1>
+    <p>Bem vindo ao meu site!</p>
+    <nav>
+        <button hx-get="/tab/jupiter" hx-target="main" hx-push-url="true">
+            Júpiter
+        </button>
+        <button hx-get="/tab/professor" hx-target="main" hx-push-url="true">
+            Professor
+        </button>
+        <button hx-get="/tab/curtidas" hx-target="main" hx-push-url="true">
+            Curtidas
+        </button>
+    </nav>
+    <hr>
+
+    <main hx-get="{{ pagina }}" hx-target="main" hx-trigger="load" hx-push-url="true">
+    </main>
+
+    <div hx-get="/tab/proxima" hx-trigger="keyup[shiftKey&&altKey&&(key=='p'||key=='P')] from:body" hx-target="main">
+    </div>
+</body>
+
+</html>

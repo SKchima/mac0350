@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block conteudo %}
+<p>Aqui você pode fazer as suas reservas para a semana que vem</p>
+<br>
+<h2>Criar reserva</h2>
+<form hx-post="/reservas" hx-target="#mensagem" hx-swap="beforeend" hx-on::after-request="this.reset()">
+    <input type="text" name="estacao_id" placeholder="ID da Estação" required>
+    <select name="dia" required>
+        <option value="0">Segunda-feira</option>
+        <option value="1">Terça-feira</option>
+        <option value="2">Quarta-feira</option>
+        <option value="3">Quinta-feira</option>
+        <option value="4">Sexta-feira</option>
+        <option value="5">Sábado</option>
+    </select>
+    <input type="number" min="8" max="20" name="horario" placeholder="Horário" required>
+    <button type="submit">Criar reserva</button>
+</form>
+
+<div id="lista" hx-get="/reservas" hx-trigger="submit from:form, delete from:form, put from:form" hx-target="#lista"
+    hx-select="#lista" hx-swap="outerHTML">
+    <h2>Minhas Reservas</h2>
+    <ul>
+        {% set nomes_dias = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado',
+        'Domingo'] %}
+        {% for reserva in reservas %}
+        <li><strong>{{ reserva.id }}:</strong> Estação {{ reserva.estacao_id }} reservada para {{
+            nomes_dias[reserva.dia] }} às {{ reserva.horario }}:00</li>
+        {% else %}
+        <li><em>Nenhuma reserva encontrada.</em></li>
+        {% endfor %}
+    </ul>
+
+    <div id="paginacao">
+        {% if pagina > 1 %}
+        <button hx-get="/reservas?pagina={{ pagina - 1 }}" hx-target="#lista" hx-select="#lista" hx-swap="outerHTML">
+            Anterior
+        </button>
+        {% endif %}
+
+        <span>Página {{ pagina }}</span>
+
+        {% if tem_proxima %}
+        <button hx-get="/reservas?pagina={{ pagina + 1 }}" hx-target="#lista" hx-select="#lista" hx-swap="outerHTML">
+            Próximo
+        </button>
+        {% endif %}
+    </div>
+</div>
+
+<h2>Atualizar reserva</h2>
+<form hx-put="/reservas" hx-target="#mensagem" hx-swap="beforeend" hx-on::after-request="this.reset()">
+    <input type="number" name="id" placeholder="ID da reserva" required>
+    <input type="text" name="estacao_id" placeholder="ID da Estação" required>
+    <select name="dia" required>
+        <option value="0">Segunda-feira</option>
+        <option value="1">Terça-feira</option>
+        <option value="2">Quarta-feira</option>
+        <option value="3">Quinta-feira</option>
+        <option value="4">Sexta-feira</option>
+        <option value="5">Sábado</option>
+    </select>
+    <input type="number" min="8" max="20" name="horario" placeholder="Horário" required>
+    <button type="submit">Atualizar reserva</button>
+</form>
+
+<h2>Deletar reserva</h2>
+<form hx-delete="/reservas" hx-target="#mensagem" hx-swap="beforeend" hx-on::after-request="this.reset()">
+    <input type="number" name="id" placeholder="ID da reserva" required>
+    <button type="submit">Deletar reserva</button>
+</form>
+
+<div id="mensagem"></div>
+{% endblock %}

@@ -1,0 +1,12 @@
+<div>
+    <h2>Contador de curtidas</h2>
+    <p>Total: <strong id="likes-val">{{ likes }}</strong></p>
+
+    <button hx-post="/curtir?acao=somar" hx-target="main">
+        Curtir!
+    </button>
+
+    <button hx-post="/curtir?acao=limpar" hx-target="main" hx-confirm="Tem certeza?">
+        Limpar
+    </button>
+</div>

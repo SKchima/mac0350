@@ -5,16 +5,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escalonador de Estações</title>
-    {% if user %}
-    <p>Logado como: {{ user.nome }}</p>
-    <a href="/logout">Logout</a>
-    {% else %}
-    <a href="/login">Login</a>
-    {% endif %}
-    <!-- <link rel="stylesheet" href="/static/css/style.css"> -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.js"
+        integrity="sha384-ezjq8118wdwdRMj+nX4bevEi+cDLTbhLAeFF688VK8tPDGeLUe0WoY2MZtSla72F"
+        crossorigin="anonymous"></script>
 </head>
 
+
 <body>
+    <header>
+        <h1>Escalonador de Estações</h1>
+        <nav>
+            {% if user %}
+            <div class="nav-links">
+                <a href="/estacoes">Casa do Código</a>
+                <span>|</span>
+                <a href="/reservas">Reservas</a>
+            </div>
+
+            <div class="nav-user">
+                <span>Logado como: {{ user.nome }}</span>
+                <span>|</span>
+                <a href="/logout">Logout</a>
+            </div>
+            {% else %}
+            <div class="nav-user" style="margin-left: auto;">
+                <a href="/login">Já tenho uma conta</a>
+                <span>|</span>
+                <a href="/cadastro">Quero me cadastrar</a>
+            </div>
+            {% endif %}
+        </nav>
+    </header>
     <main>
         {% block conteudo %}{% endblock %}
     </main>

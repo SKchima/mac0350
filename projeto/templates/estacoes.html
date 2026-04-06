@@ -1,14 +1,36 @@
 {% extends "layout.html" %}
 
 {% block conteudo %}
-<div>
-    <h2>Painel da Estação</h2>
+<h1>Casa do Código</h1>
+<div id="mensagem_estacao"></div>
 
-    <div>
-        <h3>Bem-vindo(a), <strong>{{ user.nome }}</strong>!</h3>
-        <p>Você está alocado(a) na <strong>Estação {{ user.estacao }}</strong>.</p>
+<div id="grid" hx-get="/estacoes" hx-trigger="submit from:form delay:50ms" hx-target="#grid" hx-select="#grid"
+    hx-swap="outerHTML">
+    {% for estacao in estacoes %}
+    <div class="estacao">
+        <h2>{{ estacao.nome }}</h2>
+
+        {% if estacao.usuario_em_uso_id == None %}
+        <p><strong>Status:</strong> <span style="color: green;">Disponível</span></p>
+        <form hx-post="/utilizar" hx-target="#mensagem_estacao" hx-swap="innerHTML" hx-on::after-request="this.reset()">
+            <input type="hidden" name="estacao_id" value="{{ estacao.id }}">
+            <button type="submit">Começar a Usar</button>
+        </form>
+
+        {% elif estacao.usuario_em_uso_id == user.id %}
+        <p><strong>Status:</strong> <span style="color: blue;">Você está usando esta estação</span></p>
+        <form hx-post="/desocupar" hx-target="#mensagem_estacao" hx-swap="innerHTML"
+            hx-on::after-request="this.reset()">
+            <input type="hidden" name="estacao_id" value="{{ estacao.id }}">
+            <button type="submit">Encerrar Uso</button>
+        </form>
+
+        {% else %}
+        <p><strong>Status:</strong> <span style="color: red;">Ocupada por {{ nomes_usuarios[estacao.usuario_em_uso_id]
+                }}</span>
+        </p>
+        {% endif %}
     </div>
-
-    <a href="/logout">Sair da Conta</a>
+    {% endfor %}
 </div>
 {% endblock %}

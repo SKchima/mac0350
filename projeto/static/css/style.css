@@ -1,0 +1,143 @@
+:root {
+    --cor-primaria: #000000;
+    --cor-secundaria: #4c0167;
+    --cor-fundo: #000000;
+    --cor-texto: #ffffff;
+    --cor-grid-fundo: #111111;
+}
+
+body {
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    font-family: 'JetBrains Mono', monospace;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: var(--cor-primaria);
+    padding: 0.1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 1.5rem;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
+    margin-left: 2rem;
+}
+
+.nav-links,
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+nav a {
+    color: var(--cor-texto);
+    text-decoration: none;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+main {
+    padding: 1rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+#grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.estacao {
+    background-color: var(--cor-grid-fundo);
+    border: 2px solid var(--cor-secundaria);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+input,
+select {
+    padding: 5px;
+    margin-right: 5px;
+    min-width: 100px;
+}
+
+button {
+    background-color: var(--cor-secundaria);
+    color: var(--cor-texto);
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+#mensagem p {
+    color: var(--cor-secundaria);
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+        padding: 1rem;
+    }
+
+    nav {
+        flex-direction: column;
+        margin-left: 0;
+        gap: 15px;
+    }
+
+    .nav-links,
+    .nav-user {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .nav-user span[style*="opacity"] {
+        display: none;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    input,
+    select,
+    button {
+        width: 100%;
+        margin-right: 0;
+        box-sizing: border-box;
+    }
+
+    #grid {
+        grid-template-columns: 1fr;
+    }
+}

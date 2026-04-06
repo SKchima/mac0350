@@ -3,17 +3,17 @@
 {% block conteudo %}
 <div>
     <h2>Login</h2>
-    <form>
+    <form hx-post="/login" hx-target="#feedback" hx-swap="innerHTML">
         <label for="nome">Nome:</label>
-        <input type="text" id="nome" placeholder="Nome">
+        <input type="text" id="nome" name="nome" required>
 
         <label for="senha">Senha:</label>
-        <input type="password" id="senha" placeholder="Senha">
+        <input type="password" id="senha" name="senha" required>
 
-        <button type="button" onclick="login()">Entrar</button>
+        <button type="submit">Entrar</button>
     </form>
-    <p>Não tem conta? <a href="/cadastro">Cadastre-se</a></p>
+    <br>
+    <div id="feedback"></div>
 </div>
 
-<script src="/static/js/login.js"></script>
 {% endblock %}

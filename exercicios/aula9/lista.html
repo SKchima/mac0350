@@ -1,0 +1,39 @@
+<!-- Arquivo lista.html -->
+
+<div id="busca-container">
+    <label for="busca">Pesquisar aluno:</label>
+    <input type="text" name="busca" placeholder="Digite um nome..." hx-get="/lista"
+        hx-trigger="input changed delay:500ms" hx-select="#lista" hx-target="#lista" hx-indicator="#indicator">
+
+    <img id="indicator" class="htmx-indicator" src="/Static/spinner.svg" alt="Carregando..."
+        style="width: 25px; vertical-align: middle;" />
+</div>
+
+<div id="lista">
+    <h3>Alunos Registrados</h3>
+    <ul>
+        {% for aluno in alunos %}
+        <li><strong>{{ aluno.id }}:</strong> {{ aluno.nome }}</li>
+        {% else %}
+        <li><em>Nenhum aluno encontrado para esta busca.</em></li>
+        {% endfor %}
+    </ul>
+
+    <div id="paginacao">
+        {% if pagina > 1 %}
+        <button hx-get="/lista?busca={{ busca }}&pagina={{ pagina - 1 }}" hx-target="#lista" hx-select="#lista"
+            hx-indicator="#indicator">
+            Anterior
+        </button>
+        {% endif %}
+
+        <span>Página {{ pagina }}</span>
+
+        {% if tem_proxima %}
+        <button hx-get="/lista?busca={{ busca }}&pagina={{ pagina + 1 }}" hx-target="#lista" hx-select="#lista"
+            hx-indicator="#indicator">
+            Próximo
+        </button>
+        {% endif %}
+    </div>
+</div>
